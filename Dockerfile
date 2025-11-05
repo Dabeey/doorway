@@ -1,42 +1,51 @@
-# ===== Stage 1: Node build =====
+# ===== Stage 1: Node builder =====
 FROM node:18 AS nodebuilder
-
 WORKDIR /app
+
+# Copy package files first
 COPY package*.json ./
 RUN npm ci
+
+# Copy source code
 COPY . .
-RUN npm run build
+
+# --- IMPORTANT ---
+# Build will run *after* Composer installation in Stage 2
+# so skip build here
 
 # ===== Stage 2: PHP + Nginx =====
 FROM php:8.2-fpm
 
-# Install system deps and PHP extensions
+# System deps
 RUN apt-get update && apt-get install -y \
     git unzip libpng-dev libonig-dev libxml2-dev zip curl nginx supervisor \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-WORKDIR /var/www
+WORKDIR /app
 
-# Copy project source
+# Copy composer from image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy project files
 COPY . .
 
-# Copy built assets from node stage
-COPY --from=nodebuilder /app/public/build /var/www/public/build
-
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install PHP dependencies first (creates /vendor)
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Laravel caches
-RUN php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan event:cache
+# Copy Node deps from previous stage and build
+COPY --from=nodebuilder /app/node_modules ./node_modules
+RUN npm run build
 
-# Permissions
-RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
-    && chmod -R 777 storage bootstrap/cache
+# Cache Laravel config
+RUN php artisan config:cache \
+ && php artisan route:cache \
+ && php artisan view:cache \
+ && php artisan event:cache
 
-# Copy configs
-COPY ./nginx.conf /etc/nginx/sites-enabled/default
-COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Copy nginx + supervisor configs if any
+# COPY ./nginx.conf /etc/nginx/sites-enabled/default
+# COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 8080
-CMD ["/usr/bin/supervisord"]
+
+CMD php artisan serve --host=0.0.0.0 --port=8080
