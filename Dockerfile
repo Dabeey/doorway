@@ -1,35 +1,40 @@
-# Dockerfile
+# ===== Stage 1: Node build =====
+FROM node:18 AS nodebuilder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# ===== Stage 2: PHP + Nginx =====
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system deps and PHP extensions
 RUN apt-get update && apt-get install -y \
     git unzip libpng-dev libonig-dev libxml2-dev zip curl nginx supervisor \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Set working directory
 WORKDIR /var/www
 
-# Copy project files
+# Copy project source
 COPY . .
 
-# Install Composer
+# Copy built assets from node stage
+COPY --from=nodebuilder /app/public/build /var/www/public/build
+
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Build assets (for Livewire/Filament)
-RUN npm ci && npm run build
+# Laravel caches
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan event:cache
 
-# Cache Laravel configuration
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan event:cache
-
-# Set permissions
+# Permissions
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
     && chmod -R 777 storage bootstrap/cache
 
-# Copy Nginx config and Supervisor config
+# Copy configs
 COPY ./nginx.conf /etc/nginx/sites-enabled/default
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
