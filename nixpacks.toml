@@ -6,11 +6,11 @@ cmds = ['composer install --optimize-autoloader --no-dev --no-scripts --no-inter
 
 [phases.build]
 cmds = [
-    'composer install --optimize-autoloader --no-dev --no-scripts --no-interaction',
     'npm ci',
-    'npm run build', 
+    'npm run build',
     'mkdir -p storage/framework/{sessions,views,cache} storage/logs',
     'chmod -R 777 storage bootstrap/cache',
+    'composer install --optimize-autoloader --no-dev --no-scripts --no-interaction', 
     'php artisan config:cache',
     'php artisan route:cache',
     'php artisan view:cache',
