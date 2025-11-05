@@ -18,7 +18,33 @@ Route::get('properties', PropertyListing::class)->name('properties.index');
 // Show
 Route::get('properties/{property:slug}', PropertyShow::class)->name('properties.show');
 
-
+// Temporary route to run migrations - DELETE AFTER USE!
+Route::get('/setup-database', function() {
+    try {
+        // Run migrations
+        Artisan::call('migrate', ['--force' => true]);
+        $migrations = Artisan::output();
+        
+        // Link storage
+        Artisan::call('storage:link');
+        $storage = Artisan::output();
+        
+        // Seed database (optional)
+        // Artisan::call('db:seed', ['--force' => true]);
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => '✅ Database setup completed!',
+            'migrations' => $migrations,
+            'storage' => $storage
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+});
     
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
