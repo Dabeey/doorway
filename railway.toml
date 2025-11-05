@@ -1,0 +1,17 @@
+[build]
+builder = "nixpacks"
+
+[build.args]
+PHP_EXTENSIONS = "intl zip"
+
+[vars]
+DB_CONNECTION = "mysql"
+DB_HOST = "mysql.railway.internal"
+DB_PORT = "3306"
+DB_DATABASE = "railway"
+DB_USERNAME = "root"
+DB_PASSWORD = "pQnaOvwflufgPscMcTMLmaOcGyCgspXF"
+APP_ENV = "production"
+APP_DEBUG = "false"
+DB_URL = "mysql://root:pQnaOvwflufgPscMcTMLmaOcGyCgspXF@mysql.railway.internal:3306/railway"
+DB_ROOT_PASSWORD = "pQnaOvwflufgPscMcTMLmaOcGyCgspXF"
