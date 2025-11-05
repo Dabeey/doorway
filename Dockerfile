@@ -2,6 +2,8 @@
 FROM composer:2 AS composerbuilder
 WORKDIR /app
 # Copy only php deps files first for layer caching
+ENV COMPOSER_MEMORY_LIMIT=-1
+
 COPY composer.json composer.lock* ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
