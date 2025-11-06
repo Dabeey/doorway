@@ -8,6 +8,9 @@ use App\Livewire\PropertyShow;
 use App\Models\Property;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 
 Route::get('/', function (): RedirectResponse{
     return redirect()->route('properties.index');
