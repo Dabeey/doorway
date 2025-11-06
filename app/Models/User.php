@@ -8,8 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Filament\Models\Contracts\FilamentUser; // Add this
+use Filament\Panel;
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -50,7 +53,23 @@ class User extends Authenticatable
         ];
     }
 
+
     /**
+     * Determine if the user can access the Filament admin panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Allow all authenticated users for now
+        return true;
+        
+        // OR if you want to restrict to specific emails:
+        // return in_array($this->email, [
+        //     'admin@realestate.com',
+        // ]);
+    }
+
+
+        /**
      * Get the user's initials
      */
     public function initials(): string
@@ -61,4 +80,5 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
 }
