@@ -81,4 +81,20 @@ class User extends Authenticatable implements FilamentUser
             ->implode('');
     }
 
+
+    ////////////////// If You Want Restricted Access Later
+
+//     public function canAccessPanel(Panel $panel): bool
+// {
+//     // Option 1: Only specific emails
+//     return in_array($this->email, [
+//         'admin@realestate.com',
+//         'another@admin.com',
+//     ]);
+    
+    // Option 2: Check for is_admin column (if you add it)
+    // return $this->is_admin === true;
+    
+    // Option 3: Check email domain
+    // return str_ends_with($this->email, '@realestate.com');
 }
