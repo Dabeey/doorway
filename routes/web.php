@@ -64,6 +64,43 @@ Route::get('/create-admin', function() {
 });
 
 
+Route::get('/test-db', function() {
+    try {
+        DB::connection()->getPdo();
+        $tables = DB::select('SHOW TABLES');
+        return response()->json([
+            'status' => 'Database connected!',
+            'tables' => $tables
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'Database connection failed',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
+
+Route::get('/test-storage', function() {
+    $results = [];
+    
+    // Test storage write
+    try {
+        Storage::disk('public')->put('test.txt', 'test');
+        $results['storage_write'] = 'OK';
+    } catch (\Exception $e) {
+        $results['storage_write'] = $e->getMessage();
+    }
+    
+    // Check symlink
+    $results['symlink_exists'] = file_exists(public_path('storage'));
+    $results['storage_path'] = storage_path('app/public');
+    $results['public_path'] = public_path('storage');
+    
+    return response()->json($results);
+});
+
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
