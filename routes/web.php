@@ -47,6 +47,23 @@ Route::get('/setup-database', function() {
     }
 });
     
+// TEMPORARY - Create admin user
+Route::get('/create-admin', function() {
+    if (app()->environment('production')) {
+        $user = \App\Models\User::firstOrCreate(
+            ['email' => 'admin@realestate.com'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('admin123'), // Change this password!
+            ]
+        );
+        
+        return "Admin created! Email: admin@realestate.com, Password: admin123 - DELETE THIS ROUTE NOW!";
+    }
+    return 'Not in production';
+});
+
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
