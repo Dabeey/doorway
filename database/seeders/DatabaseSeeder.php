@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin123')
         ]);
 
-        Property::factory(50)->create();
+        Property::factory(70)->create();
     }
 }
