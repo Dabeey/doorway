@@ -34,13 +34,16 @@ Route::get('/setup-database', function() {
         $storage = Artisan::output();
         
         // Seed database (optional)
-        // Artisan::call('db:seed', ['--force' => true]);
-        
+        Artisan::call('db:seed', ['--force' => true]);
+        $seed = Artisan::output();
+
         return response()->json([
             'status' => 'success',
             'message' => '✅ Database setup completed!',
             'migrations' => $migrations,
-            'storage' => $storage
+            'storage' => $storage,
+            'seed' => $seed
+
         ]);
     } catch (\Exception $e) {
         return response()->json([
@@ -102,6 +105,20 @@ Route::get('/test-storage', function() {
     
     return response()->json($results);
 });
+
+Route::get('/make-admin/{email}', function($email) {
+    $user = \App\Models\User::where('email', $email)->first();
+    
+    if (!$user) {
+        return "User not found!";
+    }
+    
+    // If you have an is_admin column
+    // $user->is_admin = true;
+    // $user->save();
+    
+    return "User {$user->email} is now admin! (Delete this route now!)";
+})->where('email', '.*');
 
 
 Route::view('dashboard', 'dashboard')
