@@ -14,7 +14,7 @@ export default defineConfig({
     ],
     server: {
         hmr: {
-            host: 'doorway.test',
+            host: 'doorway-real-estate-app.test',
         },
         host: '0.0.0.0', // Allow external connections
    
