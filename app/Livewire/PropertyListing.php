@@ -59,7 +59,7 @@ class PropertyListing extends Component
         'featuredOnly' => ['except' => false],
         'sortBy' => ['except' => 'created_at'],
         'sortDirection' => ['except' => 'desc'],
-        'perPage' => ['except' => 24], // ← ADDED
+        'perPage' => ['except' => 12], // ← ADDED
         // REMOVED: 'page' - Livewire pagination handles this automatically
 
     ];
@@ -166,7 +166,7 @@ class PropertyListing extends Component
             ->when($this->maxPrice, fn($q) => $q->where('price', '<=', $this->maxPrice))
             ->when($this->minBedrooms, fn($q) => $q->where('bedrooms', '>=', $this->minBedrooms))
             ->when($this->featuredOnly, fn($q) => $q->where('is_featured', true))
-            ->available()
+            // ->available()
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage); // ← CHANGED: Use dynamic perPage
     }

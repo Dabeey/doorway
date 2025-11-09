@@ -192,6 +192,26 @@ Route::get('/add-test-property', function() {
 });
 
 
+Route::get('/activate-all-properties', function() {
+    $updated = \App\Models\Property::query()
+        ->update([
+            'is_active' => true,
+            'status' => 'available'
+        ]);
+    
+    return "✅ Updated {$updated} properties to active and available! <a href='/properties'>View Properties</a>";
+});
+
+
+
+
+Route::get('/clear-all-images', function() {
+    $count = \App\Models\Property::query()->update(['images' => json_encode([])]);
+    return "✅ Cleared images from {$count} properties! <a href='/admin/properties'>Go to Admin</a>";
+});
+
+
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
