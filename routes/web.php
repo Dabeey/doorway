@@ -121,6 +121,77 @@ Route::get('/make-admin/{email}', function($email) {
 })->where('email', '.*');
 
 
+// Temporary routes - DELETE AFTER USE!
+Route::get('/seed-properties', function() {
+    if (app()->environment('production')) {
+        try {
+            // Seed properties
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\DatabaseSeeder', '--force' => true]);
+            
+            $output = Artisan::output();
+            
+            $propertyCount = \App\Models\Property::count();
+            $userCount = \App\Models\User::count();
+            
+            return "<h1>✅ Database Seeded Successfully!</h1>
+                    <p><strong>Properties created:</strong> {$propertyCount}</p>
+                    <p><strong>Users:</strong> {$userCount}</p>
+                    <p><a href='/'>Go to Homepage</a></p>
+                    <p><a href='/admin'>Go to Admin</a></p>
+                    <pre>{$output}</pre>
+                    <p style='color:red;'><strong>⚠️ DELETE /seed-properties route now!</strong></p>";
+        } catch (\Exception $e) {
+            return "<h1>❌ Seeding Failed</h1><pre>" . $e->getMessage() . "</pre>";
+        }
+    }
+    return 'Only works in production';
+});
+
+Route::get('/add-test-property', function() {
+    if (app()->environment('production')) {
+        try {
+            $property = \App\Models\Property::create([
+                'title' => 'Beautiful 3 Bedroom House in Lagos',
+                'description' => 'A stunning property with modern amenities',
+                'type' => 'house',
+                'listing_type' => 'sale',
+                'status' => 'available',
+                'price' => 50000000,
+                'address' => '123 Test Street',
+                'city' => 'Lagos',
+                'state' => 'Lagos State',
+                'country' => 'Nigeria',
+                'bedrooms' => 3,
+                'bathrooms' => 2,
+                'total_area' => 200,
+                'built_year' => 2020,
+                'furnished' => true,
+                'parking' => true,
+                'parking_spaces' => 2,
+                'features' => ['Swimming Pool', 'Garden', 'Security'],
+                'images' => [
+                    'https://picsum.photos/seed/house1/800/600',
+                    'https://picsum.photos/seed/house2/800/600',
+                    'https://picsum.photos/seed/house3/800/600',
+                ],
+                'slug' => 'beautiful-3-bedroom-house-lagos-' . rand(1000, 9999),
+                'is_featured' => true,
+                'is_active' => true,
+            ]);
+            
+            return "<h1>✅ Test Property Created!</h1>
+                    <p><strong>ID:</strong> {$property->id}</p>
+                    <p><strong>Title:</strong> {$property->title}</p>
+                    <p><a href='/'>View on Homepage</a></p>
+                    <p><a href='/admin/properties'>View in Admin</a></p>";
+        } catch (\Exception $e) {
+            return "<h1>❌ Failed</h1><pre>" . $e->getMessage() . "</pre>";
+        }
+    }
+    return 'Only works in production';
+});
+
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
