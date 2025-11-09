@@ -7,15 +7,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "fakerphp/faker": "^1.24",
         "filament/filament": "4.0",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.6",
         "livewire/volt": "^1.7.0",
-        "rennokki/laravel-eloquent-query-cache": "*",
-        "fakerphp/faker": "^1.23"
-
+        "rennokki/laravel-eloquent-query-cache": "*"
     },
     "require-dev": {
         "laravel/pail": "^1.2.2",
