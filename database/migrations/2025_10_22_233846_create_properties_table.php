@@ -20,7 +20,7 @@ return new class extends Migration
 
             // Pricing
             $table->decimal('price', 12, 2);
-            $table->decimal('price_per_sqft', 8, 2)->nullable();
+            $table->decimal('price_per_sqft', 15, 2)->nullable();
 
             // Location
             $table->string('address');
