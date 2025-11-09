@@ -13,10 +13,11 @@
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.6",
         "livewire/volt": "^1.7.0",
-        "rennokki/laravel-eloquent-query-cache": "*"
+        "rennokki/laravel-eloquent-query-cache": "*",
+        "fakerphp/faker": "^1.23"
+
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.18",
         "laravel/sail": "^1.41",
