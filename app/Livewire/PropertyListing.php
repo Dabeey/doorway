@@ -59,7 +59,7 @@ class PropertyListing extends Component
         'featuredOnly' => ['except' => false],
         'sortBy' => ['except' => 'created_at'],
         'sortDirection' => ['except' => 'desc'],
-        'perPage' => ['except' => 12], // ← ADDED
+        'perPage' => ['except' => 24], // ← ADDED
         // REMOVED: 'page' - Livewire pagination handles this automatically
 
     ];
