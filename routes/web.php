@@ -210,6 +210,37 @@ Route::get('/clear-all-images', function() {
     return "✅ Cleared images from {$count} properties! <a href='/admin/properties'>Go to Admin</a>";
 });
 
+Route::get('/activate-all-properties', function() {
+    $updated = \App\Models\Property::query()
+        ->update([
+            'is_active' => true,
+            'status' => 'available'
+        ]);
+    
+    $total = \App\Models\Property::count();
+    $active = \App\Models\Property::where('is_active', true)->where('status', 'available')->count();
+    
+    return "
+        <h1>✅ Properties Activated!</h1>
+        <p>Total properties: {$total}</p>
+        <p>Now available: {$active}</p>
+        <p><a href='/properties'>View Properties</a></p>
+        <p><a href='/admin/properties'>Go to Admin</a></p>
+        <p style='color:red;'>DELETE THIS ROUTE NOW!</p>
+    ";
+});
+
+Route::get('/clear-property-images', function() {
+    $count = \App\Models\Property::query()->update(['images' => '[]']);
+    
+    return "
+        <h1>✅ Cleared images from {$count} properties!</h1>
+        <p>You can now add images manually from the admin panel.</p>
+        <p><a href='/admin/properties'>Go to Admin</a></p>
+        <p><a href='/properties'>View Properties (will show placeholders)</a></p>
+        <p style='color:red;'>DELETE THIS ROUTE NOW!</p>
+    ";
+});
 
 
 Route::view('dashboard', 'dashboard')
