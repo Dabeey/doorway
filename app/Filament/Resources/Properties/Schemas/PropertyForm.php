@@ -169,7 +169,7 @@ class PropertyForm
                             ])
                             ->maxSize(10240) // 10MB
                             ->maxFiles(10)
-                            ->disk('public')
+                            ->disk('cloudinary')
                             ->directory('properties-images')
                             ->visibility('public')
                             ->downloadable()

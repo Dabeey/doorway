@@ -45,7 +45,9 @@ class PropertyFactory extends Factory
             'latitude' => $this->faker->latitude(6.4, 6.6), // Nigeria latitude range
             'longitude' => $this->faker->longitude(3.3, 3.5), // Nigeria longitude range
             'price' => round($price, 2),
-            'price_per_sqft' => $this->getArea($type) > 0 ? round($price / $this->getArea($type), 2) : 0,
+            'price_per_sqft' => $this->getArea($type) > 0 
+            ? min(round($price / $this->getArea($type), 2), 999999.99) : 0,
+            // 'price_per_sqft' => $this->getArea($type) > 0 ? round($price / $this->getArea($type), 2) : 0,
             'built_year' => $this->faker->numberBetween(1980, 2023),
             'furnished' => $this->faker->boolean(40), // 40% chance of being furnished
             'parking' => $this->faker->boolean(70), // 70% chance of having parking

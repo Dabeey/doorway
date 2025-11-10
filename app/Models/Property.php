@@ -150,30 +150,29 @@ class Property extends Model
         return "{$this->address}, {$this->city}, {$this->state}, {$this->country}";
     }
 
-    // FIXED: Main image accessor
     public function getMainImageAttribute(): ?string
     {
         $images = $this->images;
         
-        // Check if images array exists and has items
         if (!is_array($images) || empty($images)) {
-            return null;
+            return 'https://placehold.co/800x600/e5e7eb/64748b?text=No+Image';
         }
         
         $mainImage = $images[0];
         
-        // If it's already a full URL (from seeding), return as is
+        // Cloudinary URLs are already complete, just return them
         if (filter_var($mainImage, FILTER_VALIDATE_URL)) {
             return $mainImage;
         }
         
-        // For local storage paths, check if file exists before returning URL
+        // Fallback for old local storage
         if (Storage::disk('public')->exists($mainImage)) {
             return Storage::disk('public')->url($mainImage);
         }
         
-        return null;
+        return 'https://placehold.co/800x600/e5e7eb/64748b?text=No+Image';
     }
+    
 
     public function getImageUrlAttribute(): ?string
     {
