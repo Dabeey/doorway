@@ -242,6 +242,23 @@ Route::get('/clear-property-images', function() {
     ";
 });
 
+Route::get('/delete-duplicates', function() {
+    // Keep only first 70 properties, delete the rest
+    $toKeep = \App\Models\Property::orderBy('id', 'asc')->take(70)->pluck('id');
+    $deleted = \App\Models\Property::whereNotIn('id', $toKeep)->delete();
+    
+    $remaining = \App\Models\Property::count();
+    
+    return "
+        <h1>✅ Cleanup Complete!</h1>
+        <p>Deleted: {$deleted} duplicate properties</p>
+        <p>Remaining: {$remaining} properties</p>
+        <p><a href='/properties'>View Properties</a></p>
+        <p style='color:red;'>DELETE THIS ROUTE NOW!</p>
+    ";
+});
+
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

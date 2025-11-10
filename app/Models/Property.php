@@ -179,7 +179,7 @@ class Property extends Model
         return $this->main_image;
     }
 
-    // FIXED: Get all image URLs
+        
     public function getImageUrlsAttribute(): array
     {
         $images = $this->images;
@@ -189,30 +189,14 @@ class Property extends Model
         }
         
         $urls = [];
-        
         foreach ($images as $image) {
+            // Cloudinary returns full URLs
             if (filter_var($image, FILTER_VALIDATE_URL)) {
-                // External URL from seeding
                 $urls[] = $image;
-            } elseif (Storage::disk('public')->exists($image)) {
-                // Local file - convert to URL only if it exists
-                $urls[] = Storage::disk('public')->url($image);
             }
         }
         
         return $urls;
-    }
-
-    public function getStatusColorAttribute(): string
-    {
-        return match ($this->status) {
-            'available' => 'success',
-            'sold' => 'danger',
-            'pending' => 'info',
-            'draft' => 'secondary',
-            'rented' => 'warning',
-            default => 'secondary',
-        };
     }
 
     public function getTypeIconAttribute(): string
