@@ -175,7 +175,7 @@ class PropertyForm
                             ->downloadable()
                             ->openable()
                             ->reorderable()
-                            ->appendFiles(['image/jpeg', 'image/png', 'image/webp', 'image/jpg']) // Don't replace existing files
+                            ->appendFiles() // Don't replace existing files
                             ->columnSpanFull()
                             ->helperText('Upload up to 10 images. Max 10MB per image.')
                             ->required(),
