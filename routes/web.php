@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Cloudinary\Cloudinary;
 
 
 Route::get('/', function (): RedirectResponse{
@@ -242,6 +243,8 @@ Route::get('/clear-property-images', function() {
     ";
 });
 
+
+
 Route::get('/delete-duplicates', function() {
     // Keep only first 70 properties, delete the rest
     $toKeep = \App\Models\Property::orderBy('id', 'asc')->take(70)->pluck('id');
@@ -258,19 +261,40 @@ Route::get('/delete-duplicates', function() {
     ";
 });
 
+
 Route::get('/fix-upload', function() {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
-    Artisan::call('view:clear');
     
-    return "
-        <h1>✅ Cache Cleared!</h1>
-        <p>Filesystem disk: " . config('filesystems.default') . "</p>
-        <p>Cloudinary cloud: " . config('cloudinary.cloud_name') . "</p>
-        <p><a href='/admin/properties'>Try uploading again</a></p>
-    ";
+    $debug = [
+        'filesystem_default' => config('filesystems.default'),
+        'cloudinary_cloud_name' => config('cloudinary.cloud_name'),
+        'cloudinary_api_key' => config('cloudinary.api_key') ? 'Set (' . strlen(config('cloudinary.api_key')) . ' chars)' : 'NOT SET',
+        'cloudinary_api_secret' => config('cloudinary.api_secret') ? 'Set (' . strlen(config('cloudinary.api_secret')) . ' chars)' : 'NOT SET',
+        'env_filesystem_disk' => env('FILESYSTEM_DISK'),
+        'env_cloudinary_cloud' => env('CLOUDINARY_CLOUD_NAME'),
+        'env_cloudinary_key' => env('CLOUDINARY_API_KEY') ? 'Set' : 'NOT SET',
+    ];
+    
+    // Check if cloudinary disk exists
+    try {
+        $disks = config('filesystems.disks');
+        $debug['cloudinary_disk_configured'] = isset($disks['cloudinary']) ? 'Yes' : 'No';
+    } catch (\Exception $e) {
+        $debug['cloudinary_disk_configured'] = 'Error: ' . $e->getMessage();
+    }
+    
+    echo "<h1>Debug Info</h1>";
+    echo "<pre>";
+    print_r($debug);
+    echo "</pre>";
+    echo "<p><a href='/admin/properties'>Back to Admin</a></p>";
 });
 
+
+Route::get('/session-check', function () {
+    return session()->all();
+});
 
 
 Route::view('dashboard', 'dashboard')
@@ -294,4 +318,41 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+});
+
+
+
+Route::get('/test-cloudinary-simple', function () {
+    try {
+        // Initialize Cloudinary client
+        $cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ]
+        ]);
+
+        // Upload
+        $result = $cloudinary->uploadApi()->upload(
+            'https://via.placeholder.com/150',
+            [
+                'folder'    => 'test',
+                'public_id' => 'test-' . time(),
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'url' => $result['secure_url'],
+            'public_id' => $result['public_id']
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
 });
