@@ -258,6 +258,19 @@ Route::get('/delete-duplicates', function() {
     ";
 });
 
+Route::get('/fix-upload', function() {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    
+    return "
+        <h1>✅ Cache Cleared!</h1>
+        <p>Filesystem disk: " . config('filesystems.default') . "</p>
+        <p>Cloudinary cloud: " . config('cloudinary.cloud_name') . "</p>
+        <p><a href='/admin/properties'>Try uploading again</a></p>
+    ";
+});
+
 
 
 Route::view('dashboard', 'dashboard')
