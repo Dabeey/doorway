@@ -1,17 +1,17 @@
 [phases.setup]
-nixPkgs = ['...', 'php82Extensions.intl', 'php82Extensions.zip', 'php82Extensions.gd']
+nixPkgs = ['...', 'php82Extensions.intl', 'php82Extensions.zip']
 
 [phases.install]
-cmds = ['composer install --optimize-autoloader --no-dev --no-scripts --no-interaction --prefer-dist']
+cmds = ['composer install --optimize-autoloader --no-dev']
 
 [phases.build]
 cmds = [
-    'npm ci --omit=dev',
+    'npm ci',
     'npm run build',
-    'mkdir -p storage/framework/{sessions,views,cache,testing}',
+    'mkdir -p storage/framework/{sessions,views,cache}',
     'mkdir -p storage/logs',
-    'mkdir -p bootstrap/cache',
-    'chmod -R 775 storage bootstrap/cache'
+    'chmod -R 775 storage'
 ]
+
 [start]
-cmd = 'php artisan config:clear && php artisan cache:clear && php artisan view:clear && sleep 3 && php artisan migrate --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'rm -rf bootstrap/cache/*.php && php artisan storage:link && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT'

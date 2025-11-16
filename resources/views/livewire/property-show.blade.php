@@ -62,8 +62,13 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                                 @foreach($property->images as $index => $image)
                                     <div class="{{ $index === 0 ? 'md:col-span-2' : '' }}">
-                                        <img src="{{ $image }}" 
-                                        alt="Property image {{ $index + 1 }}"        
+                                        <img 
+                                            src="{{ $imageUrl }}" 
+                                            alt="Property image {{ $index + 1 }}"
+                                            class="w-full {{ $index === 0 ? 'h-96' : 'h-48' }} object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                                            onerror="this.src='https://placehold.co/800x600/e5e7eb/64748b?text=No+Image'"
+                                            onclick="openImageModal('{{ $imageUrl }}')">
+                                    
                                     </div>
                                 @endforeach
                             </div>

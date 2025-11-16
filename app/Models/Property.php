@@ -154,32 +154,27 @@ class Property extends Model
     {
         $images = $this->images;
         
+        // Return placeholder if no images
         if (!is_array($images) || empty($images)) {
             return 'https://placehold.co/800x600/e5e7eb/64748b?text=No+Image';
         }
         
-        $mainImage = $images[0];
+        $mainImage = $images[0]; // Get first image
         
-        // Cloudinary URLs are already complete, just return them
+        // If it's already a full URL (external like Picsum), return it
         if (filter_var($mainImage, FILTER_VALIDATE_URL)) {
             return $mainImage;
         }
         
-        // Fallback for old local storage
-        if (Storage::disk('public')->exists($mainImage)) {
-            return Storage::disk('public')->url($mainImage);
-        }
-        
-        return 'https://placehold.co/800x600/e5e7eb/64748b?text=No+Image';
+        // Otherwise it's a local path, build the URL
+        return config('app.url') . '/storage/' . $mainImage;
     }
     
-
     public function getImageUrlAttribute(): ?string
     {
         return $this->main_image;
     }
-
-        
+    
     public function getImageUrlsAttribute(): array
     {
         $images = $this->images;
@@ -188,19 +183,14 @@ class Property extends Model
             return [];
         }
         
-        $urls = [];
-        foreach ($images as $image) {
-            // Cloudinary returns full URLs
+        return array_map(function($image) {
+            // If already a URL, return as-is
             if (filter_var($image, FILTER_VALIDATE_URL)) {
-                $urls[] = $image;
-            } else {
-                // Local storage - generate URL
-                $urls[] = config('app.url') . '/storage/' . $image;
-    
+                return $image;
             }
-        }
-        
-        return $urls;
+            // Otherwise build storage URL
+            return config('app.url') . '/storage/' . $image;
+        }, $images);
     }
 
     public function getTypeIconAttribute(): string

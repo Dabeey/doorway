@@ -8,7 +8,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'livewire/*', 'livewire/upload-file'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'livewire/*', 'livewire/update', 'livewire/upload-file'],
 
     'allowed_methods' => ['*'],
 
