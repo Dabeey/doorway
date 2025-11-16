@@ -1,38 +1,16 @@
 # Doorway  
-Nigeria’s Best Real Estate App  
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+...Nigeria’s Best Real Estate App  
 
 
-## Project Banner
-
-<p align="center">
-  <img src="screenshots/banner.png" width="100%" alt="Project Banner"/>
-</p>
-
----
-
-## Screenshots (Table Layout)
-
-| Homepage | Property Details |
-|---------|------------------|
-| ![Homepage](screenshots/homepage.png) | ![Property Details](screenshots/detail.png) |
-
-| Agent Dashboard | Mobile View |
-|-----------------|-------------|
-| ![Agent Dashboard](screenshots/property-details.png) | ![Mobile View](screenshots/footer.png) |
-
----
-
-## Screenshots (Responsive Grid)
-
+## Screenshots
 <p align="center">
   <img src="screenshots/homepage.png" width="45%" alt="Homepage"/>
-  <img src="screenshots/property-details.png" width="45%" alt="Property Details"/>
+  <img src="screenshots/details.png" width="45%" alt="Property Details"/>
 </p>
 
 <p align="center">
-  <img src="screenshots/agent-dashboard.png" width="45%" alt="Agent Dashboard"/>
-  <img src="screenshots/mobile-view.png" width="45%" alt="Mobile View"/>
+  <img src="screenshots/property-details.png" width="45%" alt="Mobile View"/>
+  <img src="screenshots/footer.png" width="45%" alt="Agent Dashboard"/>
 </p>
 
 ---
