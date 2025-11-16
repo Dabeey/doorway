@@ -193,6 +193,10 @@ class Property extends Model
             // Cloudinary returns full URLs
             if (filter_var($image, FILTER_VALIDATE_URL)) {
                 $urls[] = $image;
+            } else {
+                // Local storage - generate URL
+                $urls[] = config('app.url') . '/storage/' . $image;
+    
             }
         }
         

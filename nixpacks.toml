@@ -13,6 +13,5 @@ cmds = [
     'mkdir -p bootstrap/cache',
     'chmod -R 775 storage bootstrap/cache'
 ]
-
 [start]
-cmd = 'sleep 3 && php artisan config:clear && php artisan migrate --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'php artisan config:clear && php artisan cache:clear && php artisan view:clear && sleep 3 && php artisan migrate --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT'
